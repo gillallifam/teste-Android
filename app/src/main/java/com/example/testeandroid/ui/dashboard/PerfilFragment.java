@@ -1,0 +1,87 @@
+package com.example.testeandroid.ui.dashboard;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.testeandroid.MainActivity;
+import com.example.testeandroid.R;
+import com.example.testeandroid.ScrollingActivity;
+
+import static android.content.Context.MODE_PRIVATE;
+
+public class PerfilFragment extends Fragment {
+
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        editor = prefs.edit();
+        TextView tv = root.findViewById(R.id.tvUserName);
+        tv.setText(prefs.getString("username", "Unknow"));
+        Bitmap bitmap = BitmapFactory.decodeFile(prefs.getString("userimage", ""));
+        ImageView uimg = root.findViewById(R.id.ivUserImage);
+        uimg.setImageBitmap(bitmap);
+        Button btLogout = root.findViewById(R.id.btPerfilLogout);
+        btLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("Confirmar");
+                builder.setMessage("Deseja fazer logout?");
+
+                builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        editor.putString("firsttime", "yes");
+                        editor.commit();
+                        dialog.dismiss();
+                        ((MainActivity) getActivity()).restart();
+                    }
+                });
+
+                builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+        return root;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+}

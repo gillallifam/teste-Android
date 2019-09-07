@@ -1,28 +1,22 @@
 package com.example.testeandroid.model;
 
-public class Movie {
+import java.io.Serializable;
 
-    String name, id;
+public class Movie implements Serializable {
 
-    public Movie(String name, String id) {
-        this.name = name;
+    String title, id;
+
+    public Movie(String id, String title) {
+        this.title = title;
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String getTitle() {
+        return title;
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }
 
