@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -32,12 +35,17 @@ public class PerfilFragment extends Fragment {
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
+    Menu menu;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         editor = prefs.edit();
+        Toolbar toolbar = getActivity().findViewById(R.id.maintoolbar);
+        //toolbar.setVisibility(View.GONE);
+        toolbar.setTitle("Profile");
+        prepareMenu();
         TextView tv = root.findViewById(R.id.tvUserName);
         tv.setText(prefs.getString("username", "Unknow"));
         Bitmap bitmap = BitmapFactory.decodeFile(prefs.getString("userimage", ""));
@@ -77,6 +85,14 @@ public class PerfilFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void prepareMenu() {
+        this.menu = ((MainActivity) getActivity()).getMenu();
+        MenuItem item = menu.findItem(R.id.menuSearch);
+        item.setVisible(false);
+        item = menu.findItem(R.id.menuListChange);
+        item.setVisible(false);
     }
 
     @Override
