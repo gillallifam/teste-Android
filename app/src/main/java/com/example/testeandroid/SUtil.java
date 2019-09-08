@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -49,6 +51,24 @@ public class SUtil {
             }, 10000);
         }
     }
+    public static String encodeURIComponent(String s) {
+        String result;
+
+        try {
+            result = URLEncoder.encode(s, "UTF-8")
+                    .replaceAll("\\+", "%20")
+                    .replaceAll("\\%21", "!")
+                    .replaceAll("\\%27", "'")
+                    .replaceAll("\\%28", "(")
+                    .replaceAll("\\%29", ")")
+                    .replaceAll("\\%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            result = s;
+        }
+
+        return result;
+    }
+
 
     public static boolean isOnline(Context context) {
         try {

@@ -1,16 +1,24 @@
 package com.example.testeandroid;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.testeandroid.model.Movie;
+import com.example.testeandroid.ui.home.MovieFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,10 +26,10 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences prefs;
-    SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
     boolean workonline;
-    Menu menu;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
         if (SUtil.isOnline(this)) {
             workonline = true;
-            Snackbar.make(findViewById(R.id.container),"Your Text Here",Snackbar.LENGTH_SHORT).show();
-            System.out.println("Working online");
+            Snackbar.make(findViewById(R.id.container), "Working online", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            //Snackbar.make(findViewById(R.id.container),"Your Text Here",Snackbar.LENGTH_LONG).show();
+            //System.out.println("Working online");
         } else {
             workonline = false;
-            System.out.println("Working offline");
+            Snackbar.make(findViewById(R.id.container), "Working offline", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            //System.out.println("Working offline");
         }
+        //workonline = false;
     }
 
     @Override
@@ -68,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_movie, R.id.navigation_perfil).build();
+                R.id.frag_movie, R.id.frag_perfil).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
@@ -84,6 +97,44 @@ public class MainActivity extends AppCompatActivity {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final MovieFragment mfrag = (MovieFragment) getSupportFragmentManager().
+                getFragments().get(0).getChildFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        switch (item.getItemId()) {
+            case R.id.menuSearch:
+                final Dialog searchDialog = new Dialog(this);
+                searchDialog.setContentView(R.layout.searchdialog);
+                final EditText edtSearchMovie = searchDialog.findViewById(R.id.edtSearchMovie);
+                Button btSearchExec = searchDialog.findViewById(R.id.btSearchExec);
+                btSearchExec.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (edtSearchMovie.getText().toString().equals("")) {
+                            Toast.makeText(MainActivity.this, "Digite um nome para pesquisar", Toast.LENGTH_SHORT).show();
+                        } else {
+                            mfrag.searchMovies(edtSearchMovie.getText().toString());
+                            searchDialog.dismiss();
+                        }
+                    }
+                });
+                Button btSearchCancel = searchDialog.findViewById(R.id.btSearchCancel);
+                btSearchCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        searchDialog.dismiss();
+                    }
+                });
+                searchDialog.show();
+                return true;
+            case R.id.menuListChange:
+                mfrag.switchAdapter();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public Menu getMenu() {

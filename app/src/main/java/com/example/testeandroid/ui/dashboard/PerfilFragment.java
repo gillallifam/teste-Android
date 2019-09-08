@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,6 +28,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.testeandroid.MainActivity;
 import com.example.testeandroid.R;
 import com.example.testeandroid.ScrollingActivity;
@@ -50,6 +58,9 @@ public class PerfilFragment extends Fragment {
         tv.setText(prefs.getString("username", "Unknow"));
         Bitmap bitmap = BitmapFactory.decodeFile(prefs.getString("userimage", ""));
         ImageView uimg = root.findViewById(R.id.ivUserImage);
+        Glide.with(getActivity()).asBitmap().load(bitmap).apply(RequestOptions.circleCropTransform()).into(uimg);
+
+
         uimg.setImageBitmap(bitmap);
         Button btLogout = root.findViewById(R.id.btPerfilLogout);
         btLogout.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +85,6 @@ public class PerfilFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        // Do nothing
                         dialog.dismiss();
                     }
                 });

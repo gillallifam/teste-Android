@@ -15,11 +15,10 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+            android:id="@+id/collapsingToolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:titleEnabled="false"
-            android:background="@drawable/background1453697"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
