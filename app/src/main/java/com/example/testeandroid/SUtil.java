@@ -1,6 +1,7 @@
 package com.example.testeandroid;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
@@ -9,24 +10,20 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import static android.os.Looper.getMainLooper;
 
-public class LUtil {
-    private static Context context;
-    public static int timeCounter = 0;
+public class SUtil {
 
-    public static void setContext(Context ctx) {
-        context = ctx;
-    }
-
-    public static void createProjectFolder() {
-        File folder = new File(context.getApplicationContext().getFilesDir(), "pedpag/");
+    public static void createProjectFolder(Context context) {
+        File folder = new File(context.getApplicationContext().getFilesDir(), "teste/");
         boolean success;
         if (!folder.exists()) {
             success = folder.mkdirs();
@@ -54,6 +51,33 @@ public class LUtil {
             }, 10000);
         }
     }
+    public static String encodeURIComponent(String s) {
+        String result;
+
+        try {
+            result = URLEncoder.encode(s, "UTF-8")
+                    .replaceAll("\\+", "%20")
+                    .replaceAll("\\%21", "!")
+                    .replaceAll("\\%27", "'")
+                    .replaceAll("\\%28", "(")
+                    .replaceAll("\\%29", ")")
+                    .replaceAll("\\%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            result = s;
+        }
+
+        return result;
+    }
+
+
+    public static boolean isOnline(Context context) {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public static boolean isReachable(String addr, int openPort, int timeOutMillis) {
         try {
@@ -65,37 +89,6 @@ public class LUtil {
             return false;
         }
     }
-
-    public static void activateTimer(final TextView tv) {
-        final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM - HH:mm:ss", Locale.getDefault());
-        final Handler someHandler = new Handler(getMainLooper());
-        someHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                timeCounter++;
-                if (timeCounter > 60 * 1) {
-                    //((MainActivity) context).showScreenSaver();
-                }
-                String dateString = sdf.format(System.currentTimeMillis());
-                tv.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                someHandler.postDelayed(this, 1000);
-                tv.setText(dateString);
-            }
-        }, 10);
-    }
-
-
-    public static String fillSpaces(String str, int amount) {
-        while (str.length() < amount) {
-            str += " ";
-        }
-        return str;
-    }
-
-    public static String fp(String str, int amount) {
-        return fillSpaces(str, amount);
-    }
-
 
     public static boolean isEmulator() {
         return Build.FINGERPRINT.startsWith("generic")
