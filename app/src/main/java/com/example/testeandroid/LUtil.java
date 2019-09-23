@@ -25,15 +25,6 @@ public class LUtil {
         context = ctx;
     }
 
-    public static void highlightViewInLayout(View view, LinearLayout layout) {
-        for (int index = 0; index < layout.getChildCount(); ++index) {
-            View nextChild = layout.getChildAt(index);
-            //nextChild.setBackground(context.getDrawable(R.drawable.buttonmenu));
-            //if (view == nextChild)
-                //nextChild.setBackground(context.getDrawable(R.drawable.buttonmenuselected));
-        }
-    }
-
     public static void createProjectFolder() {
         File folder = new File(context.getApplicationContext().getFilesDir(), "pedpag/");
         boolean success;
@@ -104,7 +95,6 @@ public class LUtil {
     public static String fp(String str, int amount) {
         return fillSpaces(str, amount);
     }
-
 
 
     public static boolean isEmulator() {
